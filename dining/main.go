@@ -41,17 +41,14 @@ var eatTime = 1 * time.Second   // how long it takes to eatTime
 var thinkTime = 3 * time.Second // how long a philosopher thinks
 var sleepTime = 1 * time.Second // how long to wait when printing things out
 
-// *** added this
-var orderMutex sync.Mutex       // a mutex for the slice orderFinished; part of challenge!
-var orderFinished []string      // the order in which philosophers finish dining and leave; part of challenge!
-
+var orderMutex sync.Mutex  // a mutex for the slice orderFinished
+var orderFinished []string // the order in which philosophers finish dining and leave
 func main() {
 	// print out a welcome message
 	fmt.Println("Dining Philosophers Problem")
 	fmt.Println("---------------------------")
 	fmt.Println("The table is empty.")
 
-	// *** added this
 	time.Sleep(sleepTime)
 
 	// start the meal
@@ -59,8 +56,7 @@ func main() {
 
 	// print out finished message
 	fmt.Println("The table is empty.")
-	
-	// *** added this
+
 	time.Sleep(sleepTime)
 	fmt.Printf("Order finished: %s.\n", strings.Join(orderFinished, ", "))
 
@@ -107,7 +103,7 @@ func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*s
 
 	// seat the philosopher at the table
 	fmt.Printf("%s is seated at the table.\n", philosopher.name)
-	
+
 	// Decrement the seated WaitGroup by one.
 	seated.Done()
 
@@ -131,7 +127,7 @@ func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*s
 			forks[philosopher.rightFork].Lock()
 			fmt.Printf("\t%s takes the right fork.\n", philosopher.name)
 		}
-		
+
 		// By the time we get to this line, the philosopher has a lock (mutex) on both forks.
 		fmt.Printf("\t%s has both forks and is eating.\n", philosopher.name)
 		time.Sleep(eatTime)
@@ -151,8 +147,7 @@ func diningProblem(philosopher Philosopher, wg *sync.WaitGroup, forks map[int]*s
 	fmt.Println(philosopher.name, "is satisified.")
 	fmt.Println(philosopher.name, "left the table.")
 
-	// *** added this
 	orderMutex.Lock()
 	orderFinished = append(orderFinished, philosopher.name)
 	orderMutex.Unlock()
-}   
+}
